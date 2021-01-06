@@ -34,7 +34,10 @@ rownames(anno)<- anno$Probe.Set.ID
 
 ################################################################################
 setwd ("/Volumes/My Passport/PeterAnalysis/GeneSet/")
+
+#Is this code useful? I didn't see allarray in the following script.
 allarray <- vector(mode="list", length=20) 
+
 filenames <- list.files(path=".", pattern = "*CEL")
 exprArray <- ReadAffy(filenames = as.matrix(filenames))
 setwd ("~/Documents/R/Report/ATF1-CREB1project")
@@ -85,6 +88,9 @@ exprs.Array.FC <- cbind(exprs.by.symbol, results)
 
 ##########################################################################################
 #get gene list
+
+#There are two different ways to get the gene list, which one should be used?
+#first gene list type?
 genelist=exprs.Array.FC[(exprs.Array.FC[,"logFC"]< -1 | exprs.Array.FC[,"logFC"]> 1) & (exprs.Array.FC[,"adjustedp"]<0.01),]
 genelist <- genelist[order(genelist[,"logFC"], decreasing = TRUE),]
 nrow(genelist)
@@ -92,12 +98,14 @@ nrow(genelist)
 genes <- c("CREB1", "EWSR1", "ATF1")
 genes <- c("NTF3", "POU2AF1", "IRF4", "PAX5", "CCND1", "ALK", "MN1", "NTRK3", "ERBB3", "TACC2")
 
+#second gene list type?
 genelist <- as.matrix(exprs.by.symbol[genes,])
 genelist <- 2^genelist
 ##########################################################################################
 write.table(genelist, file = sprintf("Table_%s_%sgenes.csv", target, nrow(genelist)) , sep = ",", quote = FALSE, col.names = TRUE, row.names = TRUE)
 genelist <- subset(genelist, select = -c(logFC, p, adjustedp))
 
+#Is the motifResult the same as the one appearing later?
 genelist<- 2^(exprs.by.symbol[rownames(motifResult), ])
 
 ##########################################################################################
@@ -151,6 +159,9 @@ legend("topright",legend=c("EWS-ATF1", "EWS-CREB1-AFH", "EWS-CREB1-GI", "Other")
 dev.off()
 
 ##########################################################################################
+
+#what is the function of this part?
+
 ews_atf <- read.csv("./Table_EWS-ATF1vsOther_1FC01Padj_386genes.csv")
 test <- as.matrix(u133aID2ucscID[symb2probe[rownames(ews_atf),],2])
 test <- cbind(u133aID2ucscID[symb2probe[rownames(ews_atf),],2], u133aID2ucscID[symb2probe[rownames(ews_atf),],3], ews_atf)
@@ -164,6 +175,7 @@ test <- as.matrix(u133aID2ucscID[symb2probe[rownames(ews_creb),],2])
 test <- cbind(u133aID2ucscID[symb2probe[rownames(ews_creb),],2], u133aID2ucscID[symb2probe[rownames(ews_creb),],3], ews_creb)
 write.table(test, file = sprintf("Table_EWS-CREB1-AFHvsOther_1FC01Padj_141genes_plusRnaSeqGenes_motif.tsv", target, nrow(test)) , sep = "\t", quote = FALSE, col.names = TRUE, row.names = FALSE)
 
+#What is the file "MotifMatchingResult_EWS-CREB1-AFHvsOther_1FC01Padj_141genes_plusRnaSeqGenes_Cytoscape.txt"? How was it generated?
 motifResult <- read.csv("MotifMatchingResult_EWS-CREB1-AFHvsOther_1FC01Padj_141genes_plusRnaSeqGenes_Cytoscape.txt", row.names = NULL)
 motifResult[motifResult[,6]=="",6] <- NA 
 motifResult <- as.matrix(na.omit(motifResult[,6]))
@@ -235,6 +247,8 @@ ggsave(e, device = "pdf", filename = sprintf("%s.pdf", titleName) , dpi = 500, w
 
 ##########################################################################################
 ###### Revise ######
+
+#Is the difference between revise and former part just reserving "AFH" from "mytable"?
 setwd('~/Documents/R/Report/ATF1-CREB1project/')
 groupName1 <- "CCS"
 groupName2 <- "AFH"
